@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Link } from "react-router-dom"
 import { CalendarIcon, Users, Check, X } from "lucide-react"
 import { de } from "date-fns/locale"
@@ -54,6 +55,7 @@ function dateToIso(date: Date): string {
 export default function RaumBuchen() {
   const { standortId } = useStandort()
   const { datum, von, bis, setAuswahl, query } = useBuchungsAuswahl()
+  const [selectedRaumId, setSelectedRaumId] = useState<string | null>(null)
 
   const standort = getStandort(standortId)
   const raeume = getRaeumeByStandort(standortId)
@@ -157,8 +159,34 @@ export default function RaumBuchen() {
         {raeume.map((raum) => {
           const verfuegbar =
             zeitraumGueltig && istVerfuegbar(raum.id, datum, von, bis)
+          const selected = selectedRaumId === raum.id
+          // Nur verfügbare Räume sind auswählbar.
+          const selectierbar = verfuegbar
           return (
-            <Card key={raum.id} className="flex flex-col">
+            <Card
+              key={raum.id}
+              data-testid={`raum-card-${raum.id}`}
+              {...(selectierbar
+                ? {
+                    role: "button",
+                    tabIndex: 0,
+                    "aria-pressed": selected,
+                    onClick: () => setSelectedRaumId(raum.id),
+                    onKeyDown: (e: React.KeyboardEvent) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault()
+                        setSelectedRaumId(raum.id)
+                      }
+                    },
+                  }
+                : {})}
+              className={cn(
+                "flex flex-col",
+                selectierbar &&
+                  "cursor-pointer transition-colors hover:border-primary/50 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none",
+                selected && "border-primary ring-2 ring-primary",
+              )}
+            >
               <CardHeader>
                 <div className="flex items-start justify-between gap-2">
                   <CardTitle>{raum.name}</CardTitle>
@@ -184,6 +212,7 @@ export default function RaumBuchen() {
               <CardFooter className="gap-2">
                 <Link
                   to={`/raeume/${raum.id}${query}`}
+                  onClick={(e) => e.stopPropagation()}
                   className={cn(buttonVariants({ variant: "outline" }), "flex-1")}
                 >
                   Details
@@ -191,6 +220,7 @@ export default function RaumBuchen() {
                 {verfuegbar ? (
                   <Link
                     to={`/buchen/${raum.id}${query}`}
+                    onClick={(e) => e.stopPropagation()}
                     className={cn(buttonVariants(), "flex-1")}
                   >
                     Buchen
