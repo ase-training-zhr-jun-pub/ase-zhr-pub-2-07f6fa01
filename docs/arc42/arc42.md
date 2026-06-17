@@ -89,18 +89,27 @@ spa --> booking : REST API\n(JSON)
 
 | Baustein | Verantwortlichkeit | Quellcode |
 |----------|-------------------|-----------|
-| **SPA** | Benutzeroberfläche für Buchungen, Kalenderansichten und Reports | `frontend/` |
+| **SPA** | Benutzeroberfläche für Buchungen, Kalenderansichten und Reports; enthält statische Mock-Daten für Standorte, Konferenzräume und Ausstattungen (Prototyp) | `frontend/` |
 | **Booking Service** | Buchungslogik, Validierung, Konfliktprüfung, Auswertungsdaten | `backend/` |
 
 ### Schnittstelle: SPA → Booking Service
 
 Die SPA kommuniziert mit dem Booking Service über eine REST API (JSON über HTTPS). Die API-Spezifikation wird als OpenAPI-Dokument im Backend gepflegt.
 
+> **Prototyp-Einschränkungen**: Standort-, Konferenzraum- und Ausstattungsdaten sind als Mock-Daten in der SPA hinterlegt (kein separater Ressource-Service). Die Authentifizierung erfolgt über Basic-Auth ohne Passwörter. Beide Punkte sind als technische Schulden dokumentiert und werden vor dem Produktivbetrieb abgelöst. Siehe [Technische Schulden](../architektur/technische-schulden.md).
+
 ---
 
 ## Architekturentscheidungen
 
-Architekturentscheidungen sind als Architecture Decision Records (ADR) dokumentiert. Die ADRs findest du unter `docs/arc42/adrs/`.
+Architekturentscheidungen sind als Architecture Decision Records (ADR) dokumentiert.
+
+| ADR | Titel | Status |
+|-----|-------|--------|
+| [ADR-001](adrs/ADR-001-frontend-prototyp-und-booking-service.md) | Frontend-Prototyp mit separatem Booking Service | Akzeptiert |
+| [ADR-0001](../architektur/adrs/ADR-0001-technologie-stack-fuer-booking-service.md) | Technologie-Stack für den Booking Service | Akzeptiert |
+| [ADR-0002](../architektur/adrs/ADR-0002-ressourcedaten-als-mock-daten-in-der-spa.md) | Ressourcedaten als Mock-Daten in der SPA | Akzeptiert |
+| [ADR-0003](../architektur/adrs/ADR-0003-basic-auth-ohne-passwort-fuer-prototyp.md) | Basic-Auth ohne Passwörter statt Okta für den Prototypen | Akzeptiert |
 
 ---
 
